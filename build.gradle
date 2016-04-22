@@ -30,6 +30,13 @@ apply plugin: 'scala'
 apply plugin: 'publishing'
 apply plugin: 'maven-publish'
 
+def javaVersion = '1.8'
+
+def scalaVersion = '2.11.8'
+def scalaAbiVersion = '2.11'
+
+def playVersion = '2.4.3'
+
 publishing {
 	if(version == 'unspecified' || version ==~ /.*?-g.{7}/) {
 		repositories.maven {
@@ -54,6 +61,7 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			groupId 'nl.idgis.dav'
+			artifactId "${project.name}_${scalaAbiVersion}"
 			artifact jar
 			
 			if(project.version == 'unspecified') {
@@ -76,13 +84,6 @@ sourceSets {
 		}
 	}
 }
-
-def javaVersion = '1.8'
-
-def scalaVersion = '2.11.8'
-def scalaAbiVersion = '2.11'
-
-def playVersion = '2.4.3'
 
 dependencies {
 	compile "org.scala-lang:scala-library:${scalaVersion}"
