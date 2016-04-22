@@ -27,6 +27,43 @@ if(describe && describe.startsWith('v')) {
 }
 
 apply plugin: 'scala'
+apply plugin: 'publishing'
+apply plugin: 'maven-publish'
+
+publishing {
+	if(version == 'unspecified' || version ==~ /.*?-g.{7}/) {
+		repositories.maven {
+			name 'idgis-snapshots'
+			url 'http://nexus.idgis.eu/content/repositories/snapshots/'
+			credentials {
+				username nexusUser 
+				password nexusPassword
+			}
+		}
+	} else {		
+		repositories.maven {
+			name 'idgis-releases'
+			url 'http://nexus.idgis.eu/content/repositories/releases/'
+			credentials {
+				username nexusUser 
+				password nexusPassword
+			}
+		}
+	}
+	
+	publications {
+		mavenJava(MavenPublication) {
+			groupId 'nl.idgis.dav'
+			artifact jar
+			
+			if(project.version == 'unspecified') {
+				version = '0.0.1-SNAPSHOT'
+			} else if(project.version ==~ /.*?-g.{7}/) {
+				version = "${project.version}-SNAPSHOT"
+			}
+		}
+	}
+}
 
 repositories {
 	mavenCentral()
