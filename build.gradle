@@ -12,19 +12,26 @@ sourceSets {
 	}
 }
 
+def javaVersion = '1.8'
+
+def scalaVersion = '2.11.8'
+def scalaAbiVersion = '2.11'
+
+def playVersion = '2.4.3'
+
 dependencies {
-	compile 'org.scala-lang:scala-library:2.11.8'
-	compile 'com.typesafe.play:play-java_2.11:2.4.3'
+	compile "org.scala-lang:scala-library:${scalaVersion}"
+	compile "com.typesafe.play:play-java_${scalaAbiVersion}:${playVersion}"
 }
 
 task compilePlayTwirlTemplates(type: TwirlCompile) {
 	
 	setPlatform([
-		getJavaPlatform: {'1.8'},
-		getPlayVersion: {'2.4.3'},
+		getJavaPlatform: {javaVersion},
+		getPlayVersion: {playVersion},
 		getScalaPlatform: {[
-			getScalaCompatibilityVersion: {'2.11'},
-			getScalaVersion: {'2.11.8'}
+			getScalaCompatibilityVersion: {scalaAbiVersion},
+			getScalaVersion: {scalaVersion}
 		] as ScalaPlatform}
 	] as PlayPlatform)
 	
