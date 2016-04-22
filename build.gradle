@@ -90,6 +90,15 @@ dependencies {
 	compile "com.typesafe.play:play-java_${scalaAbiVersion}:${playVersion}"
 }
 
+jar {
+	manifest {
+		attributes("Implementation-Title": project.name)
+		if(project.version != 'unspecified') {
+			attributes("Implementation-Version": project.version)
+		}
+	}
+}
+
 task compilePlayTwirlTemplates(type: TwirlCompile) {
 	
 	setPlatform([
