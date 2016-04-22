@@ -28,43 +28,12 @@ task compilePlayTwirlTemplates(type: TwirlCompile) {
 		] as ScalaPlatform}
 	] as PlayPlatform)
 	
+	defaultImports = 'JAVA'
+	
 	source = files('src/main/twirl')
 	include '**/*.scala.xml'
 	
 	outputDirectory = file('build/twirl')
 }
 
-task fixTwirlTemplates {
-	dependsOn compilePlayTwirlTemplates
-}
-
-fixTwirlTemplates << {
-	fileTree(dir: 'build/twirl', include: '**/*.scala').visit { item ->
-		if(!item.isDirectory()) {		
-			def sourceLines = item.file.readLines();
-
-			sourceLines.remove(6);
-
-			['import play.api.templates.PlayMagic._',
-			'import models._',
-			'import controllers._',
-			'import java.lang._',
-			'import java.util._',
-			'import scala.collection.JavaConversions._',
-			'import scala.collection.JavaConverters._',
-			'import play.api.i18n._',
-			'import play.core.j.PlayMagicForJava._',
-			'import play.mvc._',
-			'import play.data._',
-			'import play.api.data.Field',
-			'import play.mvc.Http.Context.Implicit._',
-			'import views.html._'].eachWithIndex { line, lineNo ->
-				sourceLines.add(6 + lineNo, line)
-			}
-
-			item.file.write(sourceLines.join('\n'))
-		}
-	}
-}
-
-compileScala.dependsOn(fixTwirlTemplates)
+compileScala.dependsOn(compilePlayTwirlTemplates)
