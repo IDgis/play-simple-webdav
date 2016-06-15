@@ -7,4 +7,7 @@
 	@if(resourceProperties.lastModifiedAsRFC2822().isPresent()) {
 		<D:getlastmodified>@resourceProperties.lastModifiedAsRFC2822().get()</D:getlastmodified>
 	}
+	@for(customProperty <- resourceProperties.customProperties().entrySet()) {
+		<C:@customProperty.getKey().getLocalPart() xmlns:C="@customProperty.getKey().getNamespaceURI()">@customProperty.getValue()</C:@customProperty.getKey().getLocalPart()>
+	}
 </D:prop>
