@@ -37,38 +37,24 @@ def scalaAbiVersion = '2.11'
 
 def playVersion = '2.4.3'
 
+version '0.0.1-SNAPSHOT'
+group 'nl.idgis.dav'
+
 publishing {
-	if(version == 'unspecified' || version ==~ /.*?-g.{7}/) {
-		repositories.maven {
-			name 'idgis-snapshots'
-			url 'http://nexus.idgis.eu/content/repositories/snapshots/'
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = "https://maven.pkg.github.com/IDgis/play-simple-webdav"
 			credentials {
-				username nexusUser 
-				password nexusPassword
-			}
-		}
-	} else {		
-		repositories.maven {
-			name 'idgis-releases'
-			url 'http://nexus.idgis.eu/content/repositories/releases/'
-			credentials {
-				username nexusUser 
-				password nexusPassword
+				username = System.getenv("GITHUB_USER") ?: ghUser
+				password = System.getenv("GITHUB_TOKEN") ?: ghKey
 			}
 		}
 	}
 	
 	publications {
-		mavenJava(MavenPublication) {
-			groupId 'nl.idgis.dav'
-			artifactId "${project.name}_${scalaAbiVersion}"
-			artifact jar
-			
-			if(project.version == 'unspecified') {
-				version = '0.0.1-SNAPSHOT'
-			} else if(project.version ==~ /.*?-g.{7}/) {
-				version = "${project.version}-SNAPSHOT"
-			}
+		gpr(MavenPublication) {
+			from(components.java)
 		}
 	}
 }
