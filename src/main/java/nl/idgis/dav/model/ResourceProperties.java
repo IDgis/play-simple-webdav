@@ -1,7 +1,7 @@
 package nl.idgis.dav.model;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
@@ -10,8 +10,9 @@ import javax.xml.namespace.QName;
 
 public interface ResourceProperties {
 	
-	static DateFormat rfc2822 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
-
+	static final DateTimeFormatter rfc2822 = DateTimeFormatter
+			.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+	
 	boolean collection();
 	
 	Optional<Date> lastModified();
@@ -19,6 +20,7 @@ public interface ResourceProperties {
 	Map<QName, String> customProperties();
 	
 	default Optional<String> lastModifiedAsRFC2822() {
-		return lastModified().map(rfc2822::format);
+		return lastModified().map(date ->
+			rfc2822.format(date.toInstant().atZone(ZoneOffset.UTC)));
 	}
 }
